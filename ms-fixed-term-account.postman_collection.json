@@ -1,0 +1,30 @@
+{
+	"info": {
+		"_postman_id": "09fbd85c-c985-4408-b93f-480b3632f762",
+		"name": "ms-fixed-term-account",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/api/fixedAccount/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"fixedAccount",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
