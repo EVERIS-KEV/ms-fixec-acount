@@ -5,6 +5,9 @@ import com.everis.fixedtermaccount.dto.message;
 import com.everis.fixedtermaccount.dto.movements;
 import com.everis.fixedtermaccount.model.fixedTermAccount;
 import com.everis.fixedtermaccount.repository.fixedTermAccountRepository;
+
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,12 +84,17 @@ public class fixedTermAccountService {
 
   public Mono<Object> saveMovements(movements model) {
     String msg = "Movimiento realizado";
+    Date date = new Date();
 
-    if (reposirtory.existsByAccountNumber(model.getAccountNumber())) {
-      if (model.getType().equals("Deposito") || model.getType().equals("Retiro")) msg =
-        setAmount(model); 
-      else msg = "Selecione una operacion correcta.";
-    } else msg = "Numero de cuenta incorrecto.";
+    if( date.getDate() == 15 ) {
+    	if (reposirtory.existsByAccountNumber(model.getAccountNumber())) {
+    	      if (model.getType().equals("Deposito") || model.getType().equals("Retiro")) msg =
+    	        setAmount(model); 
+    	      else msg = "Selecione una operacion correcta.";
+    	    } else msg = "Numero de cuenta incorrecto.";
+    } else msg = "No puede hacer movimientos fuera de la fecha establecida (15/**/****)."; 
+    
+    
 
     return Mono.just(new message(msg));
   }
