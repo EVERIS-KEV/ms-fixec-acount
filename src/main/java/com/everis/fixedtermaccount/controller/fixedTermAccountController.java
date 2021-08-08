@@ -52,8 +52,8 @@ public class fixedTermAccountController {
 		return service.getAll();
 	}
 	
-	@GetMapping("/{id}")
-	public Mono<Object> findOne(@PathVariable("id") String id){
-		return service.getOne(id);
+	@GetMapping("/{number}")
+	public Mono<Object> findOneByNumberAccount(@PathVariable("number") String number){ 
+		return service.getOne(number);
 	}
 }

@@ -60,6 +60,8 @@ public class fixedTermAccountService {
     return "Movimiento realizado";
   }
 
+  
+  
   public Mono<Object> save(fixedTermAccount model) {
     String msg = "Cuenta creada.";    
     
@@ -94,6 +96,6 @@ public class fixedTermAccountService {
   }
 
   public Mono<Object> getOne(String id) {
-    return Mono.just(reposirtory.findById(id));
+    return Mono.just(reposirtory.findByAccountNumber(id));
   }
 }

@@ -1,10 +1,7 @@
 package com.everis.fixedtermaccount;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
- 
-
-import java.util.Random;
+import org.springframework.boot.autoconfigure.SpringBootApplication; 
 
 @SpringBootApplication
 public class fixedTermAccountServiceApplication {
