@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.everis.fixedtermaccount.dto.movements;
-import com.everis.fixedtermaccount.logic.generatedId;
+import com.everis.fixedtermaccount.logic.myFunctions;
 
 import lombok.*; 
 
@@ -26,7 +26,7 @@ public class fixedTermAccount {
 	private List<movements> movements;
 	
 	public fixedTermAccount() {  
-		this.accountNumber = generatedId.numberAccount(12);
+		this.accountNumber = myFunctions.numberAccount(12);
 		this.dateCreated = new Date().toString();
 		this.amount = 0.0;
 		this.movements = new ArrayList<movements>();
@@ -34,7 +34,7 @@ public class fixedTermAccount {
 	
 	public fixedTermAccount(String idCustomer) { 
 		this.idCustomer = idCustomer;
-		this.accountNumber = generatedId.numberAccount(12);
+		this.accountNumber = myFunctions.numberAccount(12);
 		this.dateCreated = new Date().toString();
 		this.amount = 0.0;
 		this.movements = new ArrayList<movements>();
