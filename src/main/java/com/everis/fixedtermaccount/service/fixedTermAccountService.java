@@ -1,17 +1,15 @@
 package com.everis.fixedtermaccount.service;
 
+import com.everis.fixedtermaccount.consumer.webclient;
 import com.everis.fixedtermaccount.dto.customer;
 import com.everis.fixedtermaccount.dto.message;
 import com.everis.fixedtermaccount.dto.movements;
 import com.everis.fixedtermaccount.model.fixedTermAccount;
 import com.everis.fixedtermaccount.repository.fixedTermAccountRepository;
-
 import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -21,21 +19,19 @@ public class fixedTermAccountService {
   @Autowired
   fixedTermAccountRepository reposirtory;
 
-  WebClient webclient = WebClient.create("http://localhost:8081");
-
   private Boolean verifyCustomer(String id) {
-    return webclient
+    return webclient.customer
       .get()
-      .uri("/api/customers/verifyId/{id}", id)
+      .uri("/verifyId/{id}", id)
       .retrieve()
       .bodyToMono(Boolean.class)
       .block();
   }
 
   private customer customerFind(String id) {
-    return webclient
+    return webclient.customer
       .get()
-      .uri("/api/customers/{id}", id)
+      .uri("/{id}", id)
       .retrieve()
       .bodyToMono(customer.class)
       .block();
@@ -63,20 +59,17 @@ public class fixedTermAccountService {
     return "Movimiento realizado";
   }
 
-  
-  
   public Mono<Object> save(fixedTermAccount model) {
-    String msg = "Cuenta creada.";    
-    
+    String msg = "Cuenta creada.";
+
     if (verifyCustomer(model.getIdCustomer())) {
-      String typeCustomer = customerFind(model.getIdCustomer()).getType(); 
-      
-      if(typeCustomer.equals("personal")) {
-    	  if (!reposirtory.existsByIdCustomer(model.getIdCustomer())) 
-        	  reposirtory.save(model); 
-          else msg = "Usted ya no puede tener mas cuentas fijas.";
+      String typeCustomer = customerFind(model.getIdCustomer()).getType();
+
+      if (typeCustomer.equals("personal")) {
+        if (!reposirtory.existsByIdCustomer(model.getIdCustomer())) reposirtory.save(
+          model
+        ); else msg = "Usted ya no puede tener mas cuentas fijas.";
       } else msg = "Las cuentas empresariales no deben tener cuentas a plazo fijo.";
-      
     } else msg = "Cliente no registrado";
 
     return Mono.just(new message(msg));
@@ -86,15 +79,12 @@ public class fixedTermAccountService {
     String msg = "Movimiento realizado";
     Date date = new Date();
 
-    if( date.getDate() == 15 ) {
-    	if (reposirtory.existsByAccountNumber(model.getAccountNumber())) {
-    	      if (model.getType().equals("Deposito") || model.getType().equals("Retiro")) msg =
-    	        setAmount(model); 
-    	      else msg = "Selecione una operacion correcta.";
-    	    } else msg = "Numero de cuenta incorrecto.";
-    } else msg = "No puede hacer movimientos fuera de la fecha establecida (15/**/****)."; 
-    
-    
+    if (date.getDate() == 12) {
+      if (reposirtory.existsByAccountNumber(model.getAccountNumber())) {
+        if (model.getType().equals("Deposito") || model.getType().equals("Retiro")) msg =
+          setAmount(model); else msg = "Selecione una operacion correcta.";
+      } else msg = "Numero de cuenta incorrecto.";
+    } else msg = "No puede hacer movimientos fuera de la fecha establecida (15/**/****).";
 
     return Mono.just(new message(msg));
   }
@@ -105,5 +95,11 @@ public class fixedTermAccountService {
 
   public Mono<Object> getOne(String id) {
     return Mono.just(reposirtory.findByAccountNumber(id));
+  }
+
+  public Flux<Object> getByCustomer(String id) {
+    return Flux.fromIterable(
+      reposirtory.findAll().stream().filter(c -> c.getIdCustomer().equals(id)).toList()
+    );
   }
 }

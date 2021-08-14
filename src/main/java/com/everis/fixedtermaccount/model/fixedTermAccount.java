@@ -1,51 +1,35 @@
 package com.everis.fixedtermaccount.model;
 
-import java.util.*; 
+import com.everis.fixedtermaccount.consumer.webclient; 
+import com.everis.fixedtermaccount.dto.movements; 
 
+import java.util.*;
+import lombok.*;
 import javax.validation.constraints.NotBlank;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.everis.fixedtermaccount.dto.movements;
-import com.everis.fixedtermaccount.logic.myFunctions;
-
-import lombok.*; 
-
-@Getter 
-@Setter   
-@Document(collection  = "fixed-term-account") 
+@Getter
+@Setter
+@NoArgsConstructor
+@Document(collection = "fixed-term-account")
 public class fixedTermAccount {
-	@Id
-	private String idFixedTermAccount;
-	private String accountNumber;
-	@NotBlank(message = "Debe seleccionar un cliente.")
-	private String idCustomer;
-	private String dateCreated; 
-	private double amount;
-	private List<movements> movements;
-	
-	public fixedTermAccount() {  
-		this.accountNumber = myFunctions.numberAccount(12);
-		this.dateCreated = new Date().toString();
-		this.amount = 0.0;
-		this.movements = new ArrayList<movements>();
-	}  
-	
-	public fixedTermAccount(String idCustomer) { 
-		this.idCustomer = idCustomer;
-		this.accountNumber = myFunctions.numberAccount(12);
-		this.dateCreated = new Date().toString();
-		this.amount = 0.0;
-		this.movements = new ArrayList<movements>();
-	} 
+  @Id
+  private String idFixedTermAccount; 
+  private String accountNumber = webclient.logic
+    .get()
+    .uri("/generatedNumberLong/12")
+    .retrieve()
+    .bodyToMono(String.class)
+    .block(); 
+  private String dateCreated = new Date().toString();
+  private double amount = 0.0;
+  private List<movements> movements = new ArrayList<movements>(); 
 
-	public fixedTermAccount( String accountNumber, String idCustomer, String dateCreated) {  
-		this.accountNumber = accountNumber;
-		this.idCustomer = idCustomer;
-		this.dateCreated = dateCreated;
-		this.amount = 0.0;
-		this.movements = new ArrayList<movements>();
-	} 
-	
+  @NotBlank(message = "Debe seleccionar un cliente.")
+  private String idCustomer;
+
+  public fixedTermAccount(String idCustomer) {
+    this.idCustomer = idCustomer;
+  }
 }

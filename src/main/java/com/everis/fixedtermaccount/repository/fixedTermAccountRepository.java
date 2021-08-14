@@ -6,10 +6,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface fixedTermAccountRepository
-  extends MongoRepository<fixedTermAccount, String> { 
-	
-  boolean existsByAccountNumber(String number); 
+  extends MongoRepository<fixedTermAccount, String> {
+  boolean existsByAccountNumber(String number);
   boolean existsByIdCustomer(String id);
-  
+
   fixedTermAccount findByAccountNumber(String number);
 }
