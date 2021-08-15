@@ -25,11 +25,17 @@ public class fixedTermAccount {
   private String dateCreated = new Date().toString();
   private double amount = 0.0;
   private List<movements> movements = new ArrayList<movements>(); 
+  private String perfil;
 
   @NotBlank(message = "Debe seleccionar un cliente.")
   private String idCustomer;
 
   public fixedTermAccount(String idCustomer) {
+    this.idCustomer = idCustomer;
+  } 
+
+  public fixedTermAccount(String perfil, String idCustomer) {
+    this.perfil = perfil;
     this.idCustomer = idCustomer;
   }
 }
