@@ -1,8 +1,8 @@
 package com.everis.fixedtermaccount.controller;
 
 import com.everis.fixedtermaccount.dto.message;
-import com.everis.fixedtermaccount.dto.movements;
 import com.everis.fixedtermaccount.model.fixedTermAccount;
+import com.everis.fixedtermaccount.model.movements;
 import com.everis.fixedtermaccount.service.fixedTermAccountService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +53,22 @@ public class fixedTermAccountController {
 
     return service.saveMovements(model);
   }
+  
+  @PostMapping("/addTransfer")
+  public Mono<Object> addTransfer(
+    @RequestBody @Valid movements model,
+    BindingResult bindinResult
+  ) {
+    String msg = "";
+
+    if (bindinResult.hasErrors()) {
+      for (int i = 0; i < bindinResult.getAllErrors().size(); i++) msg =
+        bindinResult.getAllErrors().get(0).getDefaultMessage();
+      return Mono.just(new message(msg));
+    }
+
+    return service.saveTransfer(model);
+  }
 
   @GetMapping("/")
   public Flux<Object> findAll() {
@@ -63,9 +79,15 @@ public class fixedTermAccountController {
   public Mono<Object> findOneByNumberAccount(@PathVariable("number") String number) {
     return service.getOne(number);
   }
+
+  @GetMapping("/verifyByNumberAccount/{number}")
+  public Mono<Boolean> verifyByNumberAccount(@PathVariable("number") String number) {
+    return service._verifyByNumberAccount(number);
+  }
   
   @GetMapping("/byCustomer/{id}")
   public Flux<Object> findByCustomer(@PathVariable("id") String id){
 	  return service.getByCustomer(id);
   }
+  
 }

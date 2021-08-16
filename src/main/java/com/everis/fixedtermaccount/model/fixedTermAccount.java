@@ -1,7 +1,6 @@
 package com.everis.fixedtermaccount.model;
 
-import com.everis.fixedtermaccount.consumer.webclient; 
-import com.everis.fixedtermaccount.dto.movements; 
+import com.everis.fixedtermaccount.consumer.webclient;
 
 import java.util.*;
 import lombok.*;
@@ -22,7 +21,7 @@ public class fixedTermAccount {
     .retrieve()
     .bodyToMono(String.class)
     .block(); 
-  private String dateCreated = new Date().toString();
+  private Date dateCreated = new Date();  
   private double amount = 0.0;
   private List<movements> movements = new ArrayList<movements>(); 
   private String perfil;
