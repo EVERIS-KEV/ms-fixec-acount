@@ -7,6 +7,7 @@ import com.everis.fixedtermaccount.model.fixedTermAccount;
 import com.everis.fixedtermaccount.model.movements;
 import com.everis.fixedtermaccount.repository.fixedTermAccountRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -50,7 +51,7 @@ public class fixedTermAccountService {
 	      .retrieve()
 	      .bodyToMono(Boolean.class)
 	      .block();
-	  }
+  }
 
   private Boolean verifyNumberSC(String number) {
 	    return webclient.savingAccount
@@ -169,7 +170,7 @@ public class fixedTermAccountService {
 
     if (date.getDate() == 15) {
       if (reposirtory.existsByAccountNumber(model.getAccountEmisor())) {
-    	  if (!operations.stream().filter( c -> c.equals( model.getType() ) ).toList().isEmpty()) 
+    	  if ( model.getType().equals("Retiro") || model.getType().equals("Deposito") || model.getType().equals("Trasnferencia") ) 
           msg = addMovements(model); 
         else msg = "Selecione una operacion correcta.";
       } else msg = "Numero de cuenta incorrecto.";
@@ -190,9 +191,18 @@ public class fixedTermAccountService {
 	  return Mono.just(reposirtory.existsByAccountNumber(number));
   }
 
-  public Flux<Object> getByCustomer(String id) {
-    return Flux.fromIterable(
-      reposirtory.findAll().stream().filter(c -> c.getIdCustomer().equals(id)).toList()
-    );
+public Flux<Object> getByCustomer(String id) {
+	  
+	  List<fixedTermAccount> lista = reposirtory.findAll();
+	  List<fixedTermAccount> listb = new ArrayList<fixedTermAccount>();
+	  
+	  for (int i = 0; i < lista.size(); i++) {
+		  if( lista.get(i).getIdCustomer().equals(id) ) {
+			  listb.add(lista.get(i));
+		  }
+	  }
+	  
+	  	  
+    return Flux.fromIterable(listb);
   }
 }
