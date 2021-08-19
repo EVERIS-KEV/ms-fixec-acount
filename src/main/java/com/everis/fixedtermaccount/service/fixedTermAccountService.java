@@ -1,5 +1,14 @@
 package com.everis.fixedtermaccount.service;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.everis.fixedtermaccount.consumer.webclient;
 import com.everis.fixedtermaccount.dto.customer;
 import com.everis.fixedtermaccount.dto.message;
@@ -7,202 +16,158 @@ import com.everis.fixedtermaccount.model.fixedTermAccount;
 import com.everis.fixedtermaccount.model.movements;
 import com.everis.fixedtermaccount.repository.fixedTermAccountRepository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 @Transactional
 public class fixedTermAccountService {
-  @Autowired
-  fixedTermAccountRepository reposirtory;
+	@Autowired
+	fixedTermAccountRepository reposirtory;
 
-  private final List<String> operations = Arrays.asList("Retiro", "Deposito", "Trasnferencia", "Comision");  
-  
-  private Boolean verifyCustomer(String id) {
-    return webclient.customer
-      .get()
-      .uri("/verifyId/{id}", id)
-      .retrieve()
-      .bodyToMono(Boolean.class)
-      .block();
-  }
+	private final List<String> operations = Arrays.asList("Retiro", "Deposito", "Trasnferencia", "Comision");
 
-  private customer customerFind(String id) {
-    return webclient.customer
-      .get()
-      .uri("/{id}", id)
-      .retrieve()
-      .bodyToMono(customer.class)
-      .block();
-  }
-  
-  private Boolean verifyNumberCC(String number) {
-	    return webclient.currentAccount
-	      .get()
-	      .uri("/verifyByNumberAccount/" + number)
-	      .retrieve()
-	      .bodyToMono(Boolean.class)
-	      .block();
-  }
+	private Boolean verifyCustomer(String id) {
+		return webclient.customer.get().uri("/verifyId/{id}", id).retrieve().bodyToMono(Boolean.class).block();
+	}
 
-  private Boolean verifyNumberSC(String number) {
-	    return webclient.savingAccount
-	      .get()
-	      .uri("/verifyByNumberAccount/" + number)
-	      .retrieve()
-	      .bodyToMono(Boolean.class)
-	      .block();
-	  }
+	private customer customerFind(String id) {
+		return webclient.customer.get().uri("/{id}", id).retrieve().bodyToMono(customer.class).block();
+	}
 
-  private Boolean verifyNumberFC(String number) {
-	    return webclient.fixedAccount
-	      .get()
-	      .uri("/verifyByNumberAccount/" + number)
-	      .retrieve()
-	      .bodyToMono(Boolean.class)
-	      .block();
-	  }
+	private Boolean verifyNumberCC(String number) {
+		return webclient.currentAccount.get().uri("/verifyByNumberAccount/" + number).retrieve()
+				.bodyToMono(Boolean.class).block();
+	}
 
-  private Boolean verifyCE(String number) {
-	  if ( verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number) ) return true;
-	    return false;
-  }
+	private Boolean verifyNumberSC(String number) {
+		return webclient.savingAccount.get().uri("/verifyByNumberAccount/" + number).retrieve()
+				.bodyToMono(Boolean.class).block();
+	}
 
-  private Boolean verifyCR(String number) {
-	  if ( verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number) ) return true;
-	    return false;
-  }
-  
-  private double getAmountByNumber(String number) {
-    return reposirtory.findByAccountNumber(number).getAmount();
-  }
+	private Boolean verifyNumberFC(String number) {
+		return webclient.fixedAccount.get().uri("/verifyByNumberAccount/" + number).retrieve().bodyToMono(Boolean.class)
+				.block();
+	}
 
-  private String addMovements(movements movement) {
-    double val = getAmountByNumber(movement.getAccountEmisor());
-    fixedTermAccount model = reposirtory.findByAccountNumber(movement.getAccountEmisor());
+	private Boolean verifyCE(String number) {
+		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number))
+			return true;
+		return false;
+	}
 
-    if (movement.getType().equals("Deposito")) {
-      model.setAmount(movement.getAmount() + val);
-      model.getMovements().add(movement);
-    } else {
-      if (movement.getAmount() > val) return "Cantidad insuficiente."; 
-      else {
-    	  if( movement.getType().equals("Trasnferencia") && movement.getAccountRecep()!=null) {
-    		  if(verifyCR(movement.getAccountRecep()) ){
-    			  if( verifyNumberCC( movement.getAccountRecep() ) ) { 
-      				webclient.currentAccount
-  	    				.post()
-  	    				.uri("/addTransfer")
-  	    				.body( Mono.just(movement), movements.class )
-  	    				.retrieve()
-  	    				.bodyToMono(Object.class)
-  	    				.subscribe();
-      			}
-      			if( verifyNumberSC( movement.getAccountRecep() ) ) { 
-      				webclient.savingAccount
-  	    				.post()
-  	    				.uri("/addTransfer")
-  	    				.body( Mono.just(movement), movements.class )
-  	    				.retrieve()
-  	    				.bodyToMono(Object.class)
-  	    				.subscribe(); 
-      			}
-      			if( verifyNumberFC( movement.getAccountRecep() ) ) { 	
-      				webclient.fixedAccount
-  	    				.post()
-  	    				.uri("/addTransfer")
-  	    				.body( Mono.just(movement), movements.class )
-  	    				.retrieve()
-  	    				.bodyToMono(Object.class)
-  	    				.subscribe(); 
-      			} 
-    		  } else return "Cuenta receptora no exciste.";
-    	  }
-    	  
-        model.setAmount(val - movement.getAmount());
-        model.getMovements().add(movement);
-      }
-    }
+	private Boolean verifyCR(String number) {
+		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number))
+			return true;
+		return false;
+	}
 
-    reposirtory.save(model);
-    return "Movimiento realizado";
-  }
+	private double getAmountByNumber(String number) {
+		return reposirtory.findByAccountNumber(number).getAmount();
+	}
 
-  public Mono<Object> save(fixedTermAccount model) {
-    String msg = "Cuenta creada.";
+	private String addMovements(movements movement) {
+		double val = getAmountByNumber(movement.getAccountEmisor());
+		fixedTermAccount model = reposirtory.findByAccountNumber(movement.getAccountEmisor());
 
-    if (verifyCustomer(model.getIdCustomer())) {
-      String typeCustomer = customerFind(model.getIdCustomer()).getType();
+		if (movement.getType().equals("Deposito")) {
+			model.setAmount(movement.getAmount() + val);
+			model.getMovements().add(movement);
+		} else {
+			if (movement.getAmount() > val)
+				return "Cantidad insuficiente.";
+			else {
+				if (movement.getType().equals("Trasnferencia") && movement.getAccountRecep() != null) {
+					if (verifyCR(movement.getAccountRecep())) {
+						if (verifyNumberCC(movement.getAccountRecep())) {
+							webclient.currentAccount.post().uri("/addTransfer")
+									.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
+									.subscribe();
+						}
+						if (verifyNumberSC(movement.getAccountRecep())) {
+							webclient.savingAccount.post().uri("/addTransfer")
+									.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
+									.subscribe();
+						}
+						if (verifyNumberFC(movement.getAccountRecep())) {
+							webclient.fixedAccount.post().uri("/addTransfer").body(Mono.just(movement), movements.class)
+									.retrieve().bodyToMono(Object.class).subscribe();
+						}
+					} else
+						return "Cuenta receptora no exciste.";
+				}
 
-      if (typeCustomer.equals("personal")) {
-        if (!reposirtory.existsByIdCustomer(model.getIdCustomer())) reposirtory.save(
-          model
-        ); else msg = "Usted ya no puede tener mas cuentas fijas.";
-      } else msg = "Las cuentas empresariales no deben tener cuentas a plazo fijo.";
-    } else msg = "Cliente no registrado";
+				model.setAmount(val - movement.getAmount());
+				model.getMovements().add(movement);
+			}
+		}
 
-    return Mono.just(new message(msg));
-  }
+		reposirtory.save(model);
+		return "Movimiento realizado";
+	}
 
+	public Mono<Object> save(fixedTermAccount model) {
+		String msg = "Cuenta creada.";
 
-  public Mono<Object> saveTransfer(movements model){
-	  fixedTermAccount obj = reposirtory.findByAccountNumber( model.getAccountRecep() );
-	  double amount = obj.getAmount();
-	  
-	  obj.setAmount( amount + model.getAmount() );
-	  obj.getMovements().add(model);
-	  
-	  reposirtory.save( obj );
-	  return Mono.just(new message(""));
-  }
+		if (verifyCustomer(model.getIdCustomer())) {
+			String typeCustomer = customerFind(model.getIdCustomer()).getType();
 
-  public Mono<Object> saveMovements(movements model) {
-    String msg = "Movimiento realizado";
-    Date date = new Date();
+			if (typeCustomer.equals("personal")) {
+				if (!reposirtory.existsByIdCustomer(model.getIdCustomer()))
+					reposirtory.save(model);
+				else
+					msg = "Usted ya no puede tener mas cuentas fijas.";
+			} else
+				msg = "Las cuentas empresariales no deben tener cuentas a plazo fijo.";
+		} else
+			msg = "Cliente no registrado";
 
-    if (date.getDate() == 15) {
-      if (reposirtory.existsByAccountNumber(model.getAccountEmisor())) {
-    	  if ( model.getType().equals("Retiro") || model.getType().equals("Deposito") || model.getType().equals("Trasnferencia") ) 
-          msg = addMovements(model); 
-        else msg = "Selecione una operacion correcta.";
-      } else msg = "Numero de cuenta incorrecto.";
-    } else msg = "No puede hacer movimientos fuera de la fecha establecida (15/**/****).";
+		return Mono.just(new message(msg));
+	}
 
-    return Mono.just(new message(msg));
-  }
+	public Mono<Object> saveTransfer(movements model) {
+		fixedTermAccount obj = reposirtory.findByAccountNumber(model.getAccountRecep());
+		double amount = obj.getAmount();
 
-  public Flux<Object> getAll() {
-    return Flux.fromIterable(reposirtory.findAll());
-  }
+		obj.setAmount(amount + model.getAmount());
+		obj.getMovements().add(model);
 
-  public Mono<Object> getOne(String id) {
-    return Mono.just(reposirtory.findByAccountNumber(id));
-  }
-  
-  public Mono<Boolean> _verifyByNumberAccount(String number) {
-	  return Mono.just(reposirtory.existsByAccountNumber(number));
-  }
+		reposirtory.save(obj);
+		return Mono.just(new message(""));
+	}
 
-public Flux<Object> getByCustomer(String id) {
-	  
-	  List<fixedTermAccount> lista = reposirtory.findAll();
-	  List<fixedTermAccount> listb = new ArrayList<fixedTermAccount>();
-	  
-	  for (int i = 0; i < lista.size(); i++) {
-		  if( lista.get(i).getIdCustomer().equals(id) ) {
-			  listb.add(lista.get(i));
-		  }
-	  }
-	  
-	  	  
-    return Flux.fromIterable(listb);
-  }
+	public Mono<Object> saveMovements(movements model) {
+		String msg = "Movimiento realizado";
+		Date date = new Date();
+
+		if (date.getDate() == 15) {
+			if (reposirtory.existsByAccountNumber(model.getAccountEmisor())) {
+				if (!operations.stream().filter(c -> c.equals(model.getType())).collect(Collectors.toList()).isEmpty())
+					msg = addMovements(model);
+				else
+					msg = "Selecione una operacion correcta.";
+			} else
+				msg = "Numero de cuenta incorrecto.";
+		} else
+			msg = "No puede hacer movimientos fuera de la fecha establecida (15/**/****).";
+
+		return Mono.just(new message(msg));
+	}
+
+	public Flux<Object> getAll() {
+		return Flux.fromIterable(reposirtory.findAll());
+	}
+
+	public Mono<Object> getOne(String id) {
+		return Mono.just(reposirtory.findByAccountNumber(id));
+	}
+
+	public Mono<Boolean> _verifyByNumberAccount(String number) {
+		return Mono.just(reposirtory.existsByAccountNumber(number));
+	}
+
+	public Flux<Object> getByCustomer(String id) {
+		return Flux.fromIterable(
+				reposirtory.findAll().stream().filter(c -> c.getIdCustomer().equals(id)).collect(Collectors.toList()));
+	}
 }
