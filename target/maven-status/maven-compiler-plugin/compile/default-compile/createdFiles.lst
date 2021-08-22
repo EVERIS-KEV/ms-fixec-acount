@@ -1,0 +1,9 @@
+com\everis\fixedtermaccount\fixedTermAccountServiceApplication.class
+com\everis\fixedtermaccount\consumer\webclient.class
+com\everis\fixedtermaccount\dto\customer.class
+com\everis\fixedtermaccount\model\fixedTermAccount.class
+com\everis\fixedtermaccount\controller\fixedTermAccountController.class
+com\everis\fixedtermaccount\dto\message.class
+com\everis\fixedtermaccount\repository\fixedTermAccountRepository.class
+com\everis\fixedtermaccount\model\movements.class
+com\everis\fixedtermaccount\service\fixedTermAccountService.class
