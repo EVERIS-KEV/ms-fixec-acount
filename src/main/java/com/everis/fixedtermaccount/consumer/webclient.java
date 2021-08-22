@@ -5,11 +5,11 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class webclient {
-	private static String gateway = "host.docker.internal:8090";
+	private static String gateway = "44.196.6.42:8090";
 
 	public static WebClient customer = WebClient.create("http://" + gateway + "/service/customers");
 
-	public static WebClient logic = WebClient.create("http://host.docker.internal:8090/service/logic");
+	public static WebClient logic = WebClient.create("http://" + gateway + "/service/logic");
 
 	public static WebClient creditAccount = WebClient.create("http://" + gateway + "/service/credits");
 
