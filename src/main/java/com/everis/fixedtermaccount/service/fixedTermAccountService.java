@@ -51,14 +51,16 @@ public class fixedTermAccountService {
 	}
 
 	private Boolean verifyCE(String number) {
-		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number))
+		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number)) {
 			return true;
+		}
 		return false;
 	}
 
 	private Boolean verifyCR(String number) {
-		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number))
+		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number)) {
 			return true;
+		}
 		return false;
 	}
 
@@ -72,35 +74,35 @@ public class fixedTermAccountService {
 
 		if (movement.getType().equals("Deposito")) {
 			model.setAmount(movement.getAmount() + val);
-			model.getMovements().add(movement);
 		} else {
-			if (movement.getAmount() > val)
+			if (movement.getAmount() > val) {
 				return "Cantidad insuficiente.";
-			else {
-				if (movement.getType().equals("Trasnferencia") && movement.getAccountRecep() != null) {
+			} else {
+				if (movement.getType().equals("Trasnferencia") && (movement.getAccountRecep() != null)) {
 					if (verifyCR(movement.getAccountRecep())) {
 						if (verifyNumberCC(movement.getAccountRecep())) {
 							webclient.currentAccount.post().uri("/addTransfer")
-									.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
-									.subscribe();
+							.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
+							.subscribe();
 						}
 						if (verifyNumberSC(movement.getAccountRecep())) {
 							webclient.savingAccount.post().uri("/addTransfer")
-									.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
-									.subscribe();
+							.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
+							.subscribe();
 						}
 						if (verifyNumberFC(movement.getAccountRecep())) {
 							webclient.fixedAccount.post().uri("/addTransfer").body(Mono.just(movement), movements.class)
-									.retrieve().bodyToMono(Object.class).subscribe();
+							.retrieve().bodyToMono(Object.class).subscribe();
 						}
-					} else
+					} else {
 						return "Cuenta receptora no exciste.";
+					}
 				}
 
 				model.setAmount(val - movement.getAmount());
-				model.getMovements().add(movement);
 			}
 		}
+		model.getMovements().add(movement);
 
 		reposirtory.save(model);
 		return "Movimiento realizado";
@@ -113,14 +115,17 @@ public class fixedTermAccountService {
 			String typeCustomer = customerFind(model.getIdCustomer()).getType();
 
 			if (typeCustomer.equals("personal")) {
-				if (!reposirtory.existsByIdCustomer(model.getIdCustomer()))
+				if (!reposirtory.existsByIdCustomer(model.getIdCustomer())) {
 					reposirtory.save(model);
-				else
+				} else {
 					msg = "Usted ya no puede tener mas cuentas fijas.";
-			} else
+				}
+			} else {
 				msg = "Las cuentas empresariales no deben tener cuentas a plazo fijo.";
-		} else
+			}
+		} else {
 			msg = "Cliente no registrado";
+		}
 
 		return Mono.just(new message(msg));
 	}
@@ -142,14 +147,17 @@ public class fixedTermAccountService {
 
 		if (date.getDate() == 15) {
 			if (reposirtory.existsByAccountNumber(model.getAccountEmisor())) {
-				if (!operations.stream().filter(c -> c.equals(model.getType())).collect(Collectors.toList()).isEmpty())
+				if (!operations.stream().filter(c -> c.equals(model.getType())).collect(Collectors.toList()).isEmpty()) {
 					msg = addMovements(model);
-				else
+				} else {
 					msg = "Selecione una operacion correcta.";
-			} else
+				}
+			} else {
 				msg = "Numero de cuenta incorrecto.";
-		} else
+			}
+		} else {
 			msg = "No puede hacer movimientos fuera de la fecha establecida (15/**/****).";
+		}
 
 		return Mono.just(new message(msg));
 	}

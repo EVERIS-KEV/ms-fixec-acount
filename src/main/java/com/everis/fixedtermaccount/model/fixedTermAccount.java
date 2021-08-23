@@ -28,7 +28,7 @@ public class fixedTermAccount {
 	private double amount = 0.0;
 	private String typeAccount = "Cuenta a plazo fijo.";
 	private List<movements> movements = new ArrayList<movements>();
-	private String perfil;
+	private String profile;
 
 	@NotBlank(message = "Debe seleccionar un cliente.")
 	private String idCustomer;
@@ -37,8 +37,8 @@ public class fixedTermAccount {
 		this.idCustomer = idCustomer;
 	}
 
-	public fixedTermAccount(String perfil, String idCustomer) {
-		this.perfil = perfil;
+	public fixedTermAccount(String profile, String idCustomer) {
+		this.profile = profile;
 		this.idCustomer = idCustomer;
 	}
 }
