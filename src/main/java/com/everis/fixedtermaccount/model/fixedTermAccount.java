@@ -1,8 +1,7 @@
 package com.everis.fixedtermaccount.Model;
- 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import java.time.*;
+import java.util.*;
 
 import javax.validation.constraints.NotBlank;
 
@@ -24,9 +23,11 @@ public class fixedTermAccount {
 	private String idFixedTermAccount;
 	private String accountNumber = webclient.logic.get().uri("/generatedNumberLong/12").retrieve()
 			.bodyToMono(String.class).block();
-	private Date dateCreated = new Date();
+	private LocalDateTime dateCreated = LocalDateTime.now(ZoneId.of("America/Lima"));
+
 	private double amount = 0.0;
 	private String typeAccount = "Cuenta a plazo fijo.";
+	
 	private List<movements> movements = new ArrayList<movements>();
 	private String profile;
 

@@ -1,6 +1,6 @@
 package com.everis.fixedtermaccount.Model;
  
-import java.util.Date; 
+import java.time.*; 
  
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class movements {
-	private Date dateCreated = new Date();
+	private LocalDateTime dateCreated = LocalDateTime.now( ZoneId.of("America/Lima") );
 	@NotBlank(message = "Debe seleccionar un typo de movimiento.")
 	private String type;
 

@@ -138,8 +138,9 @@ public class fixedTermAccountService {
 	public Mono<Object> saveMovements(movements model) {
 		String msg = "Movimiento realizado";
 		Date date = new Date();
+		int _date = date.getDate();
 
-		if (date.getDate() == 15) {
+		if ( _date == 15) {
 			if (reposirtory.existsByAccountNumber(model.getAccountEmisor())) {
 				if (!operations.stream().filter(c -> c.equals(model.getType())).collect(Collectors.toList())
 						.isEmpty()) {
