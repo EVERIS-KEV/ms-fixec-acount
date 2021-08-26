@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.everis.fixedtermaccount.consumer.webclient;
+import com.everis.fixedtermaccount.Constants.Constants;
+import com.everis.fixedtermaccount.Consumer.webclient;
+import com.everis.fixedtermaccount.Model.fixedTermAccount;
+import com.everis.fixedtermaccount.Model.movements;
 import com.everis.fixedtermaccount.dto.customer;
 import com.everis.fixedtermaccount.dto.message;
-import com.everis.fixedtermaccount.model.fixedTermAccount;
-import com.everis.fixedtermaccount.model.movements;
 import com.everis.fixedtermaccount.repository.fixedTermAccountRepository;
 
 import reactor.core.publisher.Flux;
@@ -50,13 +51,6 @@ public class fixedTermAccountService {
 				.block();
 	}
 
-	private Boolean verifyCE(String number) {
-		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number)) {
-			return true;
-		}
-		return false;
-	}
-
 	private Boolean verifyCR(String number) {
 		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number)) {
 			return true;
@@ -76,26 +70,26 @@ public class fixedTermAccountService {
 			model.setAmount(movement.getAmount() + val);
 		} else {
 			if (movement.getAmount() > val) {
-				return "Cantidad insuficiente.";
+				return Constants.Messages.AMOUNTH_INSUFFICIENT;
 			} else {
 				if (movement.getType().equals("Trasnferencia") && (movement.getAccountRecep() != null)) {
 					if (verifyCR(movement.getAccountRecep())) {
 						if (verifyNumberCC(movement.getAccountRecep())) {
 							webclient.currentAccount.post().uri("/addTransfer")
-							.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
-							.subscribe();
+									.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
+									.subscribe();
 						}
 						if (verifyNumberSC(movement.getAccountRecep())) {
 							webclient.savingAccount.post().uri("/addTransfer")
-							.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
-							.subscribe();
+									.body(Mono.just(movement), movements.class).retrieve().bodyToMono(Object.class)
+									.subscribe();
 						}
 						if (verifyNumberFC(movement.getAccountRecep())) {
 							webclient.fixedAccount.post().uri("/addTransfer").body(Mono.just(movement), movements.class)
-							.retrieve().bodyToMono(Object.class).subscribe();
+									.retrieve().bodyToMono(Object.class).subscribe();
 						}
 					} else {
-						return "Cuenta receptora no exciste.";
+						return Constants.Messages.INCORRECT_DATA;
 					}
 				}
 
@@ -109,7 +103,7 @@ public class fixedTermAccountService {
 	}
 
 	public Mono<Object> save(fixedTermAccount model) {
-		String msg = "Cuenta creada.";
+		String msg = Constants.Messages.ACCOUNT_REGISTERED;
 
 		if (verifyCustomer(model.getIdCustomer())) {
 			String typeCustomer = customerFind(model.getIdCustomer()).getType();
@@ -118,13 +112,13 @@ public class fixedTermAccountService {
 				if (!reposirtory.existsByIdCustomer(model.getIdCustomer())) {
 					reposirtory.save(model);
 				} else {
-					msg = "Usted ya no puede tener mas cuentas fijas.";
+					msg = Constants.Messages.CLIENT_NO_MORE_ACCOUNT;
 				}
 			} else {
-				msg = "Las cuentas empresariales no deben tener cuentas a plazo fijo.";
+				msg = Constants.Messages.CLIENTEMP_NO_MORE_ACCOUNT;
 			}
 		} else {
-			msg = "Cliente no registrado";
+			msg = Constants.Messages.CLIENT_NOT_REGISTERED;
 		}
 
 		return Mono.just(new message(msg));
@@ -147,13 +141,14 @@ public class fixedTermAccountService {
 
 		if (date.getDate() == 15) {
 			if (reposirtory.existsByAccountNumber(model.getAccountEmisor())) {
-				if (!operations.stream().filter(c -> c.equals(model.getType())).collect(Collectors.toList()).isEmpty()) {
+				if (!operations.stream().filter(c -> c.equals(model.getType())).collect(Collectors.toList())
+						.isEmpty()) {
 					msg = addMovements(model);
 				} else {
-					msg = "Selecione una operacion correcta.";
+					msg = Constants.Messages.INCORRECT_OPERATION;
 				}
 			} else {
-				msg = "Numero de cuenta incorrecto.";
+				msg = Constants.Messages.INCORRECT_DATA;
 			}
 		} else {
 			msg = "No puede hacer movimientos fuera de la fecha establecida (15/**/****).";

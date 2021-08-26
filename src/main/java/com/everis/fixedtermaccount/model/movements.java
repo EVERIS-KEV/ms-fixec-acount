@@ -1,7 +1,7 @@
-package com.everis.fixedtermaccount.model;
-
-import java.util.Date;
-
+package com.everis.fixedtermaccount.Model;
+ 
+import java.util.Date; 
+ 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 

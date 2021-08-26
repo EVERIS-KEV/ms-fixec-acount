@@ -1,9 +1,9 @@
 package com.everis.fixedtermaccount.repository;
 
+import com.everis.fixedtermaccount.Model.fixedTermAccount;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-
-import com.everis.fixedtermaccount.model.fixedTermAccount;
 
 @Repository
 public interface fixedTermAccountRepository extends MongoRepository<fixedTermAccount, String> {

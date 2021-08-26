@@ -1,9 +1,12 @@
 com\everis\fixedtermaccount\fixedTermAccountServiceApplication.class
-com\everis\fixedtermaccount\consumer\webclient.class
+com\everis\fixedtermaccount\Constants\Constants.class
 com\everis\fixedtermaccount\dto\customer.class
-com\everis\fixedtermaccount\model\fixedTermAccount.class
-com\everis\fixedtermaccount\controller\fixedTermAccountController.class
 com\everis\fixedtermaccount\dto\message.class
+com\everis\fixedtermaccount\Constants\Constants$Messages.class
+com\everis\fixedtermaccount\Controller\fixedTermAccountController.class
+com\everis\fixedtermaccount\Consumer\webclient.class
+com\everis\fixedtermaccount\Model\fixedTermAccount.class
+com\everis\fixedtermaccount\Model\movements.class
+com\everis\fixedtermaccount\Constants\Constants$Path.class
 com\everis\fixedtermaccount\repository\fixedTermAccountRepository.class
-com\everis\fixedtermaccount\model\movements.class
 com\everis\fixedtermaccount\service\fixedTermAccountService.class

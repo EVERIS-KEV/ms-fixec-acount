@@ -1,4 +1,4 @@
-package com.everis.fixedtermaccount.controller;
+package com.everis.fixedtermaccount.Controller;
 
 import javax.validation.Valid;
 
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.everis.fixedtermaccount.Model.fixedTermAccount;
+import com.everis.fixedtermaccount.Model.movements;
 import com.everis.fixedtermaccount.dto.message;
-import com.everis.fixedtermaccount.model.fixedTermAccount;
-import com.everis.fixedtermaccount.model.movements;
 import com.everis.fixedtermaccount.service.fixedTermAccountService;
 
 import reactor.core.publisher.Flux;

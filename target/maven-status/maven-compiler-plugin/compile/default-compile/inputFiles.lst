@@ -1,9 +1,10 @@
 C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\fixedTermAccountServiceApplication.java
-C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\consumer\webclient.java
+C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\Consumer\webclient.java
 C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\dto\customer.java
 C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\repository\fixedTermAccountRepository.java
-C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\model\movements.java
+C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\Model\movements.java
 C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\service\fixedTermAccountService.java
-C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\controller\fixedTermAccountController.java
+C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\Controller\fixedTermAccountController.java
 C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\dto\message.java
-C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\model\fixedTermAccount.java
+C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\Model\fixedTermAccount.java
+C:\Users\kpalmall\Documents\workspace-spring-tool-suite-4-4.11.0.RELEASE\P1-fixed-term-account-service\src\main\java\com\everis\fixedtermaccount\Constants\Constants.java

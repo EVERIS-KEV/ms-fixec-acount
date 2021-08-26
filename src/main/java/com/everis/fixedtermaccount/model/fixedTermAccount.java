@@ -1,15 +1,15 @@
-package com.everis.fixedtermaccount.model;
-
+package com.everis.fixedtermaccount.Model;
+ 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 
+import com.everis.fixedtermaccount.Consumer.webclient;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.everis.fixedtermaccount.consumer.webclient;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
